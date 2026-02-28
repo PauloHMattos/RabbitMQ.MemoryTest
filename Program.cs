@@ -58,6 +58,9 @@ var thread = new Thread(() =>
 thread.Start();
 
 var connectionFactory = new ConnectionFactory();
+#if FORK
+connectionFactory.UseBackgroundFrameWriter = !options.NonCopying;
+#endif
 
 using (var connection = await connectionFactory.CreateConnectionAsync())
 using (var channel = await connection.CreateChannelAsync())
@@ -82,9 +85,6 @@ for (var i = 0; i < options.Tasks; i++)
 					string.Empty,
 					options.QueueName,
 					messageBody
-#if FORK
-					, copyBody: !options.NonCopying
-#endif
 				);
 			}
 		}
