@@ -62,7 +62,7 @@ var connectionFactory = new ConnectionFactory();
 using (var connection = await connectionFactory.CreateConnectionAsync())
 using (var channel = await connection.CreateChannelAsync())
 {
-	channel.QueueDelete(options.QueueName);
+	await channel.QueueDeleteAsync(options.QueueName);
 }
 
 for (var i = 0; i < options.Tasks; i++)
@@ -74,7 +74,7 @@ for (var i = 0; i < options.Tasks; i++)
 		using (var connection = await connectionFactory.CreateConnectionAsync())
 		using (var channel = await connection.CreateChannelAsync())
 		{
-			channel.QueueDeclare(options.QueueName, durable: false, exclusive: false, autoDelete: true, arguments: null);
+			await channel.QueueDeclareAsync(options.QueueName, durable: false, exclusive: false, autoDelete: true, arguments: null);
 
 			for (var j = 0; j < options.Iterations; j++)
 			{
@@ -121,7 +121,7 @@ Console.WriteLine($"Memory		: {(int)(counter.NextValue() / 1024 / 1024)} MB");
 using (var connection = await connectionFactory.CreateConnectionAsync())
 using (var channel = await connection.CreateChannelAsync())
 {
-	var count = channel.MessageCount(options.QueueName);
+	var count = await channel.MessageCountAsync(options.QueueName);
 
 	Console.WriteLine($"Queue length	: {count} / {expectedCount}");
 
@@ -149,7 +149,7 @@ using (var channel = await connection.CreateChannelAsync())
 
 	Console.WriteLine();
 
-	channel.QueueDelete(options.QueueName);
+	await channel.QueueDeleteAsync(options.QueueName);
 }
 
 class Options
